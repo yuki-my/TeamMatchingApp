@@ -1,0 +1,19 @@
+{
+  "name": "team-matching-app",
+  "version": "1.0.0",
+  "description": "Team Matching Application using Firebase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "firebase"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
