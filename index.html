@@ -99,49 +99,7 @@
             <button class="secondary-btn" onclick="closeCreateProjectModal()">キャンセル</button>
         </div>
     </div>
-    <script type="module">
-      // Firebase モジュールのインポート
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-      import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, FieldValue, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
-      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-      
-      // あなたのウェブアプリの Firebase 設定 (お客様の提供情報)
-      const firebaseConfig = {
-        apiKey: "AIzaSyCHDydkHiUYCRm7r27Eyvt5UB8436izWH8",
-        authDomain: "teammatchingapp-fdffe.firebaseapp.com",
-        projectId: "teammatchingapp-fdffe",
-        storageBucket: "teammatchingapp-fdffe.firebasestorage.app",
-        messagingSenderId: "977902354996",
-        appId: "1:977902354996:web:2d97f0faead5e83399ec061",
-        measurementId: "G-1TC0SV3R5Q"
-      };
-
-      // Firebaseを初期化
-      const app = initializeApp(firebaseConfig);
-      
-      // グローバル変数にサービスインスタンスを公開
-      window.db = getFirestore(app);
-      window.auth = getAuth(app);
-      
-      // グローバル変数にV10のスタンドアローン関数を公開
-      window.collection = collection;
-      window.onSnapshot = onSnapshot;
-      window.query = query;
-      window.orderBy = orderBy;
-      window.addDoc = addDoc;
-      window.FieldValue = FieldValue;
-      window.doc = doc;
-      window.getDoc = getDoc;
-      window.updateDoc = updateDoc;
-      window.arrayUnion = arrayUnion;
-      
-      // 認証関数をグローバルに公開
-      window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-      window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-      window.signOut = signOut;
-      window.onAuthStateChanged = onAuthStateChanged;
-    </script>
     
-    <script src="script.js"></script> 
+    <script type="module" src="script.js"></script> 
 </body>
 </html>

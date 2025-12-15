@@ -1,10 +1,35 @@
-// script.js (チームマッチングサイト機能のみ)
+// script.js (修正後の全文)
 
 // -------------------------------------------------------------
-// ▼ Firebaseのサービスインスタンスと関数の参照 (index.htmlで初期化)
+// ▼ Firebase モジュールのインポートと初期化
 // -------------------------------------------------------------
-const db = window.db; 
-const auth = window.auth;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { 
+    getFirestore, collection, onSnapshot, query, orderBy, 
+    addDoc, FieldValue, doc, getDoc, updateDoc, arrayUnion 
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { 
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
+    signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+      
+// あなたのウェブアプリの Firebase 設定 (あなたの設定を使用)
+const firebaseConfig = {
+    apiKey: "AIzaSyCHDydkHiUYCRm7r27Eyvt5UB8436izWH8",
+    authDomain: "teammatchingapp-fdffe.firebaseapp.com",
+    projectId: "teammatchingapp-fdffe",
+    storageBucket: "teammatchingapp-fdffe.firebasestorage.app",
+    messagingSenderId: "977902354996",
+    appId: "1:977902354996:web:2d97f0faead5e83399ec061",
+    measurementId: "G-1TC0SV3R5Q"
+};
+
+// Firebaseを初期化し、サービスインスタンスを定義
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const FieldValue_serverTimestamp = FieldValue.serverTimestamp; // FieldValueオブジェクトから関数を取得
+
 
 // -------------------------------------------------------------
 // ▼ 変数定義とナビゲーション
@@ -33,7 +58,7 @@ function showMatchingScreen() {
 }
 
 // -------------------------------------------------------------
-// ▼ Firebase 認証機能
+// ▼ Firebase 認証機能 (window.を削除し、直接インポート関数を使用)
 // -------------------------------------------------------------
 
 // 新規ユーザー登録
@@ -41,7 +66,7 @@ function registerUser() {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
 
-    window.createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password) // 修正
         .then(() => {
             alert("登録が完了しました！");
         })
@@ -56,7 +81,7 @@ function loginUser() {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
 
-    window.signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password) // 修正
         .then(() => {
             // ログイン成功 
         })
@@ -68,7 +93,7 @@ function loginUser() {
 
 // ログアウト
 function logoutUser() {
-    window.signOut(auth)
+    signOut(auth) // 修正
         .then(() => {
             alert("ログアウトしました");
             showAuthScreen(); 
@@ -79,7 +104,7 @@ function logoutUser() {
 }
 
 // 認証状態の変更を監視
-window.onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => { // 修正
     const authForm = document.getElementById('auth-form');
     const userInfo = document.getElementById('user-info');
     const displayEmail = document.getElementById('display-user-email');
@@ -101,7 +126,7 @@ window.onAuthStateChanged(auth, (user) => {
 
 
 // -------------------------------------------------------------
-// ▼ プロジェクト機能 (一覧表示、作成、参加)
+// ▼ プロジェクト機能 (一覧表示、作成、参加) (window.を削除し、直接インポート関数を使用)
 // -------------------------------------------------------------
 
 // プロジェクト一覧を取得し、画面に表示する
@@ -109,10 +134,10 @@ function fetchProjects() {
     const projectsListElement = document.getElementById('projects-list');
     projectsListElement.innerHTML = '<p>プロジェクトを読み込み中...</p>';
     
-    const q = window.query(window.collection(db, "projects"), window.orderBy("createdAt", "desc"));
+    const q = query(collection(db, "projects"), orderBy("createdAt", "desc")); // 修正
     
     // リアルタイムリスナー
-    window.onSnapshot(q, (snapshot) => {
+    onSnapshot(q, (snapshot) => { // 修正
         projectsListElement.innerHTML = '';
         
         snapshot.forEach((doc) => {
@@ -175,7 +200,7 @@ function createNewProject() {
     }
 
     // Firestoreに新しいドキュメント（プロジェクト）を追加
-    window.addDoc(window.collection(db, "projects"), {
+    addDoc(collection(db, "projects"), { // 修正
         projectName: projectName,
         className: className,
         requiredSkills: requiredSkills,
@@ -185,7 +210,7 @@ function createNewProject() {
         ownerEmail: user.email,    
         members: [user.uid],       
         status: 'open',             
-        createdAt: window.FieldValue.serverTimestamp()
+        createdAt: FieldValue_serverTimestamp() // 修正
     })
     .then(() => {
         alert("プロジェクト「" + projectName + "」の募集を開始しました！");
@@ -206,10 +231,10 @@ async function joinProject(projectId) {
         return;
     }
     
-    const projectRef = window.doc(db, "projects", projectId);
+    const projectRef = doc(db, "projects", projectId); // 修正
     
     try {
-        const projectSnap = await window.getDoc(projectRef);
+        const projectSnap = await getDoc(projectRef); // 修正
 
         if (!projectSnap.exists()) {
             alert("エラー: 該当のプロジェクトが見つかりませんでした。");
@@ -232,8 +257,8 @@ async function joinProject(projectId) {
         }
 
         // 3. Firestoreのデータを更新
-        await window.updateDoc(projectRef, {
-            members: window.arrayUnion(user.uid), 
+        await updateDoc(projectRef, { // 修正
+            members: arrayUnion(user.uid), // 修正
             currentMembers: currentMembers.length + 1
         });
 
