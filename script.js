@@ -6,14 +6,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { 
     getFirestore, collection, onSnapshot, query, orderBy, 
-    addDoc, FieldValue, doc, getDoc, updateDoc, arrayUnion 
+    addDoc, doc, getDoc, updateDoc, arrayUnion, 
+    serverTimestamp // 修正: serverTimestamp を直接インポート
 } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 import { 
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
     signOut, onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
       
-// あなたのウェブアプリの Firebase 設定 (あなたの設定を使用)
+// あなたのウェブアプリの Firebase 設定
 const firebaseConfig = {
     apiKey: "AIzaSyCHDydkHiUYCRm7r27Eyvt5UB8436izWH8",
     authDomain: "teammatchingapp-fdffe.firebaseapp.com",
@@ -28,7 +29,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const FieldValue_serverTimestamp = FieldValue.serverTimestamp; // FieldValueオブジェクトから関数を取得
 
 
 // -------------------------------------------------------------
@@ -58,7 +58,7 @@ function showMatchingScreen() {
 }
 
 // -------------------------------------------------------------
-// ▼ Firebase 認証機能 (window.を削除し、直接インポート関数を使用)
+// ▼ Firebase 認証機能
 // -------------------------------------------------------------
 
 // 新規ユーザー登録
@@ -66,7 +66,8 @@ function registerUser() {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
 
-    createUserWithEmailAndPassword(auth, email, password) // 修正
+    // ここで auth が正しく定義されていれば、エラーは解消します
+    createUserWithEmailAndPassword(auth, email, password) 
         .then(() => {
             alert("登録が完了しました！");
         })
@@ -81,7 +82,7 @@ function loginUser() {
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
 
-    signInWithEmailAndPassword(auth, email, password) // 修正
+    signInWithEmailAndPassword(auth, email, password) 
         .then(() => {
             // ログイン成功 
         })
@@ -93,7 +94,7 @@ function loginUser() {
 
 // ログアウト
 function logoutUser() {
-    signOut(auth) // 修正
+    signOut(auth) 
         .then(() => {
             alert("ログアウトしました");
             showAuthScreen(); 
@@ -104,7 +105,7 @@ function logoutUser() {
 }
 
 // 認証状態の変更を監視
-onAuthStateChanged(auth, (user) => { // 修正
+onAuthStateChanged(auth, (user) => { 
     const authForm = document.getElementById('auth-form');
     const userInfo = document.getElementById('user-info');
     const displayEmail = document.getElementById('display-user-email');
@@ -126,7 +127,7 @@ onAuthStateChanged(auth, (user) => { // 修正
 
 
 // -------------------------------------------------------------
-// ▼ プロジェクト機能 (一覧表示、作成、参加) (window.を削除し、直接インポート関数を使用)
+// ▼ プロジェクト機能 (一覧表示、作成、参加) 
 // -------------------------------------------------------------
 
 // プロジェクト一覧を取得し、画面に表示する
@@ -134,10 +135,10 @@ function fetchProjects() {
     const projectsListElement = document.getElementById('projects-list');
     projectsListElement.innerHTML = '<p>プロジェクトを読み込み中...</p>';
     
-    const q = query(collection(db, "projects"), orderBy("createdAt", "desc")); // 修正
+    const q = query(collection(db, "projects"), orderBy("createdAt", "desc")); 
     
     // リアルタイムリスナー
-    onSnapshot(q, (snapshot) => { // 修正
+    onSnapshot(q, (snapshot) => { 
         projectsListElement.innerHTML = '';
         
         snapshot.forEach((doc) => {
@@ -200,7 +201,7 @@ function createNewProject() {
     }
 
     // Firestoreに新しいドキュメント（プロジェクト）を追加
-    addDoc(collection(db, "projects"), { // 修正
+    addDoc(collection(db, "projects"), { 
         projectName: projectName,
         className: className,
         requiredSkills: requiredSkills,
@@ -210,7 +211,7 @@ function createNewProject() {
         ownerEmail: user.email,    
         members: [user.uid],       
         status: 'open',             
-        createdAt: FieldValue_serverTimestamp() // 修正
+        createdAt: serverTimestamp() // 修正: serverTimestamp()を直接呼び出し
     })
     .then(() => {
         alert("プロジェクト「" + projectName + "」の募集を開始しました！");
@@ -231,10 +232,10 @@ async function joinProject(projectId) {
         return;
     }
     
-    const projectRef = doc(db, "projects", projectId); // 修正
+    const projectRef = doc(db, "projects", projectId); 
     
     try {
-        const projectSnap = await getDoc(projectRef); // 修正
+        const projectSnap = await getDoc(projectRef); 
 
         if (!projectSnap.exists()) {
             alert("エラー: 該当のプロジェクトが見つかりませんでした。");
@@ -257,8 +258,8 @@ async function joinProject(projectId) {
         }
 
         // 3. Firestoreのデータを更新
-        await updateDoc(projectRef, { // 修正
-            members: arrayUnion(user.uid), // 修正
+        await updateDoc(projectRef, { 
+            members: arrayUnion(user.uid), 
             currentMembers: currentMembers.length + 1
         });
 
