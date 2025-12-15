@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンプルじゃんけんゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <button id="hamburger-btn">☰</button>
+            <div class="logo">My Game Site</div>
+        </div>
+        
+        <nav class="pc-nav">
+            <ul>
+                <li><a href="#">ホーム</a></li>
+                <li><a href="#">ルール</a></li>
+                <li><a href="#">設定</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="mobile-menu" class="mobile-menu hidden">
+        <ul>
+            <li><a href="#">ホーム</a></li>
+            <li><a href="#">ルール</a></li>
+            <li><a href="#">設定</a></li>
+            <li><a href="#">閉じる</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <div id="login-screen" class="container">
+            <h1>対戦ルーム入室</h1>
+            <p>部屋名と合言葉を決めてください</p>
+            <div class="input-group">
+                <input type="text" id="room-name" placeholder="部屋名 (例: 101)">
+            </div>
+            <div class="input-group">
+                <input type="text" id="password" placeholder="合言葉 (例: apple)">
+            </div>
+            <button class="primary-btn" onclick="enterRoom()">入室する</button>
+        </div>
+
+        <div id="game-screen" class="container hidden">
+            <div class="room-info">
+                部屋: <span id="display-room-name">---</span>
+            </div>
+
+            <h1>じゃんけん勝負！</h1>
+            
+            <div class="score-board">
+                <p>勝ち: <span id="win-count">0</span></p>
+                <p>負け: <span id="loss-count">0</span></p>
+                <p>あいこ: <span id="draw-count">0</span></p>
+            </div>
+
+            <div class="result-area">
+                <p>相手の手: <span id="computer-hand" class="hand-icon">❓</span></p>
+                <p id="result-message">手を選んでください</p>
+            </div>
+
+            <div class="buttons-area">
+                <button class="game-btn" onclick="play('rock')">✊ グー</button>
+                <button class="game-btn" onclick="play('scissors')">✌️ チョキ</button>
+                <button class="game-btn" onclick="play('paper')">🖐️ パー</button>
+            </div>
+            
+            <button class="secondary-btn" onclick="leaveRoom()">退室する</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Game Site</p>
+    </footer>
+
+<script src="/socket.io/socket.io.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
+    <script src="script.js"></script>
+</body>
+</html>
